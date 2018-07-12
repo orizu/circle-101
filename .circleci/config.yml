@@ -6,11 +6,12 @@ jobs:
     steps:
       - checkout
       - run: echo "A first hello"
-      - run mkdir -p my_workspace
+      - run: mkdir -p my_workspace
       - run: echo "Trying out Circle workspaces" > my_workspace/wrk_spc.txt
       - persist_to_workspace: #persist dir for re-use
         root: my_workspace
-        path: wrk_spc_msg.txt
+        paths: 
+          - wrk_spc_msg.txt
   two:
     docker: # See https://docs.docker.com/get-started/#docker-concepts if you are new to Docker.
       - image: circleci/ruby:2.4.1-jessie
@@ -30,6 +31,6 @@ workflows:
   one_and_two:
     jobs:
       - one
-      - two
+      - two:
         requires: 
           - one
