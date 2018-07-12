@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run: echo "A first hello"
       - run: mkdir -p my_workspace
-      - run: echo "Trying out Circle workspaces" > my_workspace/wrk_spc.txt
+      - run: echo "Trying out Circle workspaces" > my_workspace/wrk_spc_msg.txt
       - persist_to_workspace: #persist dir for re-use
           root: my_workspace
           paths: 
