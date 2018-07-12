@@ -6,17 +6,30 @@ jobs:
     steps:
       - checkout
       - run: echo "A first hello"
-      - run: sleep 25
+      - run mkdir -p my_workspace
+      - run: echo "Trying out Circle workspaces" > my_workspace/wrk_spc.txt
+      - persist_to_workspace: #persist dir for re-use
+        root: my_workspace
+        path: wrk_spc_msg.txt
   two:
     docker: # See https://docs.docker.com/get-started/#docker-concepts if you are new to Docker.
       - image: circleci/ruby:2.4.1-jessie
     steps:
       - checkout
-      - run: echo "Howdy guys and gals"
-      - run: sleep 15
+      - run: echo "Re-using workspace & file from previous job"
+      - attach_workspace: #attach workspace dir from job "one"
+        at: my_workspace
+      - run: |
+          if [[ $(cat my_workspace/wrk_spc_msg.txt) == "Trying out Circle workspaces" ]]; then
+            echo "It worked!";
+          else
+            echo "Nope!"; exit 1
+          fi
 workflows:
   version: 2
   one_and_two:
     jobs:
       - one
       - two
+        requires: 
+          - one
